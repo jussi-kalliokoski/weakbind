@@ -1,0 +1,35 @@
+{
+  "name": "weakbind",
+  "version": "1.0.0",
+  "description": "Memoized bind for higher performance.",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "istanbul cover _mocha -- test/spec/ -R spec"
+  },
+  "keywords": [
+    "bind",
+    "performance",
+    "weak"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jussi-kalliokoski/weakbind.git"
+  },
+  "author": "Jussi Kalliokoski <jussi.kallikoski@gmail.com> (http://juss.in)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jussi-kalliokoski/weakbind/issues"
+  },
+  "homepage": "https://github.com/jussi-kalliokoski/weakbind",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "istanbul": "^0.3.17",
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0"
+  }
+}
