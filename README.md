@@ -38,7 +38,7 @@ Internally it uses a two-dimensional `WeakMap` where the first level key is the 
 
 ## Benchmark
 
-The benchmark (`benchmark.js`) was run on my local machine. You can run it yourself to see if the results differ.
+The benchmarks (`benchmark.js` and `react-benchmark.html`) were run on my local machine. You can run it yourself to see if the results differ.
 
 ### Without `WeakMap` (node.js v.0.10.33)
 
@@ -56,4 +56,11 @@ normal bind (trashing): 0.0012574215769975928ms (average) 0.00117ms (median)
 normal bind (repeating): 0.001258740308001994ms (average) 0.001195ms (median)
 weakbind (trashing): 0.0055595191419998595ms (average) 0.001625ms (median)
 weakbind (repeating): 0.0010129746209979584ms (average) 0.000705ms (median)
+```
+
+### React Pseudo-Random List Updates (Chrome 44.0, React 0.13.3)
+
+```
+native bind: 92.27002630098723ms (average) 88.1290000397712ms (median)
+weakbind: 24.001843099901453ms (average) 24.26900004502386ms (median)
 ```

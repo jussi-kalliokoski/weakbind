@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+var module = {
+    set exports (value) {
+        window.weakbind = value;
+    },
+};
+    </script>
+    <script src="index.js"></script>
+    <script type="text/jsx">
+function runTest (bind, name, iterations, callback) {
+    "use strict";
+
+    var container = document.getElementById("container");
+    var times = [];
+
+    function postResults () {
+        React.unmountComponentAtNode(container);
+
+
+        times.sort(function (a, b) { return a - b; });
+
+        var average = times.reduce(function (a, b) { return a + b; }, 0) / times.length;
+        var median = times[Math.floor(times.length / 2)];
+
+        console.log(name + ": " + average + "ms (average) " + median + "ms (median)");
+        callback();
+    }
+
+    class ItemComponent extends React.Component {
+        shouldComponentUpdate (props) {
+            return this.props.id !== props.id || this.props.onClick !== props.onClick;
+        }
+
+        onClicked () {
+            this.props.onClick(this.props.id);
+        }
+
+        render () {
+            return <div
+                onClick={bind(this.onClicked, this)}
+            >Click me! {this.props.id}</div>
+        }
+    }
+
+    class ListComponent extends React.Component {
+        constructor () {
+            super();
+
+            this.state = {
+                list: [],
+            };
+        }
+
+        append () {
+            if ( times.length >= iterations ) {
+                postResults();
+                return;
+            }
+
+            var index = Math.floor((Math.sin(this.state.list.length) + 1) / 2 * this.state.list.length);
+            var newItem = {
+                id: times.length,
+            };
+            var newList = this.state.list
+                .slice(0, index)
+                .concat([newItem])
+                .concat(this.state.list.slice(index));
+
+            var start = performance.now();
+
+            this.setState({
+                list: newList,
+            }, function () {
+                var time = performance.now() - start;
+                times.push(time);
+            });
+        }
+
+        componentWillUnmount () {
+            clearInterval(this.appendTimer);
+        }
+
+        componentDidMount () {
+            this.appendTimer = setInterval(bind(this.append, this), 1);
+        }
+
+        onItemClicked (itemId) {
+            alert("item " + itemId + " was clicked!");
+        }
+
+        render () {
+            return <div>
+                { this.state.list.map(bind(function (item) {
+                    return <ItemComponent key={item.id} onClick={bind(this.onItemClicked, this)} id={item.id} />;
+                }, this)) }
+            </div>;
+        }
+    }
+
+    React.render(<ListComponent />, container);
+}
+
+var ITERATIONS = 10000;
+
+runTest(function (fn, self) {
+    return fn.bind(self);
+}, "native bind", ITERATIONS, function () {
+    runTest(weakbind, "weakbind", ITERATIONS, function () {
+        console.log("benchmark completed");
+    });
+});
+    </script>
+</body>
+</html>
+
